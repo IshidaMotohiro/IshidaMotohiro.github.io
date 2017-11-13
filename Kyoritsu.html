@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="石田基広" />
+
+
+<title>WorderfulR編集手順</title>
+
+<script src="Kyoritsu_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="Kyoritsu_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="Kyoritsu_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="Kyoritsu_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="Kyoritsu_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="Kyoritsu_files/navigation-1.1/tabsets.js"></script>
+<link href="Kyoritsu_files/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="Kyoritsu_files/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">WorderfulR編集手順</h1>
+<h4 class="author"><em>石田基広</em></h4>
+<h4 class="date"><em>2017年11月13日</em></h4>
+
+</div>
+
+
+<div class="section level2">
+<h2>レポジトリの確認</h2>
+<p>例えば高橋康介先生の原稿であれば <a href="https://github.com/IshidaMotohiro/RStudiooo" class="uri">https://github.com/IshidaMotohiro/RStudiooo</a> ここにある。</p>
+<p>左の [Branch: master] というボタンを押すと [Kyoritsu] という項目があるのでこれをクリックして選ぶ。 このレポジトリにある拡張子ｍｄファイルを編集してもらう。方法は以下の通り。</p>
+<ul>
+<li>ファイル名をクリックする</li>
+<li>ウィンドウ右上に鉛筆マークがあるので、クリック</li>
+<li>ファイルに直接変更を加える。取り消し線などは不要</li>
+<li>終了したら下の Commit change 欄の上に変更の概要、下には、より詳細なコメントを書く</li>
+<li>Commit Chagens ボタンを押す</li>
+</ul>
+<p>ファイル閲覧ウィンドウに戻るので、左上の [Branch: Kyoritsu] ボタンを押して [master] 　に変更する。変更があった旨を表す黄色いラインが現れているはずなので、右の [Comnpare &amp; pull request] をクリック。</p>
+<div class="figure">
+<img src="F6-1.png" />
+
+</div>
+<p>修正の検討を依頼するウィンドウに移動するので、ここで変更の概要と、その詳細コメントを書いて [Create Pull request] ボタンを押す。</p>
+<div class="figure">
+<img src="F6.png" />
+
+</div>
+<p>以上。これで変更の通知と検討依頼（プルリクエスト）が著者にいく。</p>
+</div>
+<div class="section level2">
+<h2>別のファイルを編集した場合の注意</h2>
+<p>続けて別のファイルを編集する。ただし、先に送った変更依頼の処理がまだ終わっていない場合、次のファイルの編集を終えて [Commit change] を押して [Branch: master] に戻っても、変更を表す黄色いラインは現れていないかもしれない。 ただし、この場合でもふたつ目のファイルに対するプルリクエストは送信されているので心配はない。</p>
+<p>過去のプルリクエストがすべて処理されているタイミングで　[Commit Change] すると、上の図にあるような変更を表す黄色いラインが現れるので、その場合は再び [Create Pull request] の処理を行う。</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
