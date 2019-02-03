@@ -1,0 +1,20 @@
+name: "Motohiro ISHIDA"
+output_dir: "."
+navbar:
+  title: "Snippets Pages"
+  left:
+    - text: "Writings"
+      href: research.html
+  right:
+    - icon: fa-envelope fa-lg
+      href: contact.html
+    - icon: fa-github fa-lg
+      href: http://github.com/IshidaMotohiro
+    - icon: fa-twitter fa-lg
+      href: https://twitter.com/RMeCab
+output:
+  html_document:
+    theme: paper
+    css: 'styles.css'
+    
+    
