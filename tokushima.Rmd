@@ -1,0 +1,36 @@
+---
+title: "徳島人口移動"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 平成18年4月から平成31年1月に限定
+
+https://www.pref.tokushima.lg.jp/statistics/month/jinkou のデータのみに基づく
+
+### 24市町村の転入状況
+
+
+![](tokushima1.png)
+
+
+### 24市町村の転出状況
+
+
+![](tokushima2.png)
+
+
+## 24市町村の社会動態増減
+
+
+![](tokushima3.png)
+
+
+
+## 徳島市の転入・転出状況
+
+
+![](tokushima5.png)
