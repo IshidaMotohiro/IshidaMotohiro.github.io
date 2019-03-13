@@ -1,0 +1,110 @@
+---
+title: EBPM
+author: "石田基広"
+date: "2019年03月14日"
+output:
+  revealjs::revealjs_presentation:
+    theme: blood
+    highlight: pygments
+    center: true
+    increment: true
+    css: ../style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## 非説明変数{#a1}
+
+「人口移動」
+
+- ここでいう人口移動とは
+- e-Statには以下の登録
+ - 国勢調査（平成２７年が最新）
+ - 厚労省人口移動調査（平成２８年が最新）
+ - 住民基本台帳人口移動報告（月次、年次）
+
+## e-Stat DB{#a2}
+
+![](images/estat2.png)
+
+
+## e-Stat DB{#a3}
+
+![](images/estat3.png)
+
+## 県のオープンデータ{#a4}
+
+徳島県の統計情報 > 月次統計 > 徳島県の人口（徳島県推計人口）
+https://www.pref.tokushima.lg.jp/statistics/month/jinkou
+
+eStat と内容は同じ
+
+![](images/ken.png)
+
+
+
+## 市のオープンデータ{#a5}
+
+徳島市の人口・世帯数
+https://www.city.tokushima.tokushima.jp/shisei/toukei_johou/jinkousetaisu_tokei/jinkou_setaisu.html
+
+eStat と内容は同じ
+
+![](images/city.png)
+
+
+
+## 非説明変数の範囲は{#a6}
+
+具体的に絞りたい
+
+ - 期間（年次）？
+ - 県単位（徳島市？）
+ - 層別（性別、年齢）
+ - 説明変数は？
+
+
+## 県外への転出転入{#a7}
+
+2007年-2018年､ 15-24歳人口と比較
+
+![](images/pop2.png)
+
+## 県外への転出{#a8}
+
+1999年-2018年
+
+![](images/kengai.png)
+
+## 説明変数なき予測{#a9}
+
+Prophet
+
+![](images/prophet.png)
+
+
+## 男女15-29歳{#a10}
+
+転出超過の状況
+
+![](images/age15-24.png)
+
+## 女性15-29歳{#female15-29}
+
+![](images/female15-24.png)
+
+
+## 女性35-49歳{#female35-49}
+
+転出超過の状況
+
+![](images/female35-49.png)
+
+## 女性35-49歳{#female35-49-2}
+
+転出超過の状況
+
+![](images/age35-49.png)
