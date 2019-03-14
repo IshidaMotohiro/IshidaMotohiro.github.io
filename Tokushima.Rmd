@@ -17,27 +17,27 @@ library(tidyverse)
 ```
 
 
-## EBPM{#ebpm}
+## 1. EBPM {#ebpm}
 
 ![](images/CEP.png)
 
 
-## 人口に関する政策{#policy1}
+## 2. 人口に関する政策{#policy1}
 
 ![](images/tokushima_news.png)
 
-## 人口に関する政策{#policy2}
+## 3. 人口に関する政策{#policy2}
 
 ![](images/tokushima_news2.png)
 
 
-## 人口減少総合対策{#policy3}
+## 4. 人口減少総合対策{#policy3}
 
 地方からの「人口減少社会」への挑戦
 
 ![](images/tokushima_news3.png)
 
-## 非説明変数{#a1}
+## 5. 被説明変数{#a1}
 
 「人口移動」
 
@@ -47,38 +47,38 @@ library(tidyverse)
  - 厚労省人口移動調査（平成２８年が最新）
  - 住民基本台帳人口移動報告（月次、年次）
 
-## e-Stat DB{#a2}
+## 6. e-Stat DB{#a2}
 
 ![](images/estat2.png)
 
 
-## e-Stat DB{#a3}
+## 7. e-Stat DB{#a3}
 
 ![](images/estat3.png)
 
-## 県のオープンデータ{#a4}
+## 8. 県のオープンデータ{#a4}
 
 徳島県の統計情報 > 月次統計 > 徳島県の人口（徳島県推計人口）
 https://www.pref.tokushima.lg.jp/statistics/month/jinkou
 
-eStat と内容は同じ
+県独自の推定
 
 ![](images/ken.png)
 
 
 
-## 市のオープンデータ{#a5}
+## 9. 市のオープンデータ{#a5}
 
 徳島市の人口・世帯数
 https://www.city.tokushima.tokushima.jp/shisei/toukei_johou/jinkousetaisu_tokei/jinkou_setaisu.html
 
-eStat と内容は同じ
+
 
 ![](images/city.png)
 
 
 
-## 非説明変数の範囲は{#a6}
+## 10. 被説明変数の範囲は{#a6}
 
 具体的に絞りたい
 
@@ -88,44 +88,55 @@ eStat と内容は同じ
  - 説明変数は？
 
 
-## 県外への転出転入{#a7}
+## 11. 県外への転出転入{#a7}
 
 2007年-2018年､ 15-24歳人口と比較
 
 ![](images/pop2.png)
 
-## 県外への転出{#a8}
+## 12. 県外への転出{#a8}
 
 1999年-2018年
 
 ![](images/kengai.png)
 
-## 説明変数なき予測{#a9}
+## 13. 説明変数なき予測{#a9}
 
 Prophet
 
 ![](images/prophet.png)
 
 
-## 男女15-29歳{#a10}
+## 14. 男女15-29歳{#a10}
 
 転出超過の状況
 
 ![](images/age15-24.png)
 
-## 女性15-29歳{#female15-29}
+## 15. 女性15-29歳{#female15-29}
 
 ![](images/female15-24.png)
 
 
-## 女性35-49歳{#female35-49}
+## 16. 女性35-49歳{#female35-49}
 
 転出超過の状況
 
 ![](images/female35-49.png)
 
-## 女性35-49歳{#female35-49-2}
+## 17. 女性35-49歳{#female35-49-2}
 
 転出超過の状況
 
 ![](images/age35-49.png)
+
+
+## 18. その他
+
+文科省学校基本調査
+
+厚労省人口移動調査
+
+
+
+公開データの調査
