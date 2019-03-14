@@ -16,6 +16,27 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
+
+## EBPM{#ebpm}
+
+![](images/CEP.png)
+
+
+## 人口に関する政策{#policy1}
+
+![](images/tokushima_news.png)
+
+## 人口に関する政策{#policy2}
+
+![](images/tokushima_news2.png)
+
+
+## 人口減少総合対策{#policy3}
+
+地方からの「人口減少社会」への挑戦
+
+![](images/tokushima_news3.png)
+
 ## 非説明変数{#a1}
 
 「人口移動」
