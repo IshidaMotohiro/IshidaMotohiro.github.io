@@ -42,6 +42,20 @@ load("20190321.Rdata")
 ![](images/year1958-2017-2.png)
 
 ```{r}
+## https://www.e-stat.go.jp/stat-search/database?page=1&layout=datalist&toukei=00200523&tstat=000000070001&cycle=7&tclass1=000001040402&cycle_facet=tclass1&second2=1
+## 男女別都道府県内移動者数，他都道府県からの転入者数及び他都道府県への転出者数
+## 全国，都道府県，３大都市圏，21大都市 
+## 平成26年〜平成30年（21大都市）20190131日登録
+H26_30 <- paste0("http://api.e-stat.go.jp/rest/2.1/app/json/getStatsData?appId=",ids,"&lang=J&statsDataId=0003103378&metaGetFlg=Y&cntGetFlg=N&sectionHeaderFlg=1")
+H26_30 <- GET(H26_30)
+#######################
+H26_30_values  <-  map_df( content(H26_30) $GET_STATS_DATA $STATISTICAL_DATA $DATA_INF $VALUE,   ~ .[c("@tab", "@cat01", "@cat02", "@area", "@time", "@unit", "$" )])
+H26_30_values %>% NROW()
+
+H26_30_values %>% filter(`@tab` == "04", `@area` == "36000") 
+```
+
+```{r}
 ## tokushima20190316.R
 ## 長期人口移動 第4表 第5表
 ## https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00200523&tstat=000000070001&cycle=0&tclass1=000001051218&survey=%E4%BD%8F%E6%B0%91%E5%9F%BA%E6%9C%AC%E5%8F%B0%E5%B8%B3&result_page=1&second2=1
@@ -497,7 +511,7 @@ predict(model_vars_sa, n.ahead = 5)[[1]]$転出超過 %>% broom::tidy() %>%
   knitr::kable()
 ```
 
-ちなみに2018年の転出超過は-2531
+2018年の日本人転出超過数は-2290
 
 ## 転出数の予測範囲{#predict_range}
 
