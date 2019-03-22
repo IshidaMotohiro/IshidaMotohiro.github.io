@@ -384,7 +384,7 @@ tokushima_q %>%
   ggplot() + geom_line(aes(x = year, y = 転出超過  ))  + 
   scale_x_date(labels = date_format("%Y"), date_breaks = "1 year") +
   geom_line(aes(x = year, y = rescale(徳島, to = range(転出超過) ) ), col = "red") + 
-  scale_y_continuous(name = "転出超過", sec.axis =  sec_axis(~ rescale(., to = range(shinki_mean1$徳島)), name = "徳島新規有効求人倍率"))+
+  scale_y_continuous(name = "転出超過", sec.axis =  sec_axis(~ rescale(., to = range(shinki_mean1$徳島)), name = "徳島・新規有効求人倍率"))+
    theme(axis.text = element_text(angle = 80))# + theme_gray(base_family = "HiraKakuPro-W3") 
 # file
 # 
@@ -418,7 +418,7 @@ osaka_q  %>%
   ggplot() + geom_line(aes(x = year, y = 転出超過  ))  + 
   scale_x_date(labels = date_format("%Y"), date_breaks = "1 year") +
   geom_line(aes(x = year, y = rescale(大阪, to = range(転出超過) ) ), col = "red") + 
-  scale_y_continuous(name = "転出超過", sec.axis =  sec_axis(~ rescale(., to = range(shinki_osaka$大阪)), name = "徳島新規有効求人倍率"))+
+  scale_y_continuous(name = "転出超過", sec.axis =  sec_axis(~ rescale(., to = range(shinki_osaka$大阪)), name = "大阪・新規有効求人倍率"))+
    theme(axis.text = element_text(angle = 80))# + theme_gray(base_family = "HiraKakuPro-W3") 
 # # file
 # all_values2 %>% filter(tab == "D", cat01 == "総") %>% mutate(year = year(year)) %>% left_join(shinki_mean) %>% 
@@ -444,7 +444,7 @@ sa %>%
   scale_x_date(labels = date_format("%Y"), date_breaks = "1 year") +
   geom_line(aes(x = year, y = rescale(差, to = range(転出超過) ) ), col = "red")+
   geom_line(aes(x = year, y = rescale(差, to = range(転出超過) ) ), col = "red") + 
-  scale_y_continuous(name = "転出超過", sec.axis =  sec_axis(~ rescale(., to = range(shinki_sa$差)), name = "徳島・大阪の間の新規有効求人倍率の差"))+
+  scale_y_continuous(name = "転出超過", sec.axis =  sec_axis(~ rescale(., to = range(shinki_sa$差)), name = "徳島・大阪の新規有効求人倍率の差"))+
    theme(axis.text = element_text(angle = 80))# 
 # 
 # all_values2 %>% filter(tab == "D", cat01 == "総") %>% mutate(year = year(year)) %>% left_join(shinki_sa) %>% 
