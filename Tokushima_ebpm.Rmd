@@ -439,7 +439,7 @@ shinki_all %>% dplyr::select(X__1, 大阪=`27大阪`,徳島=`36徳島`)  %>% mut
 
 ## 徳島と大阪の求人倍率差{#tokushima_osaka1}
 
-負の値になると転出増加
+負の値と転出超過数の動向がほぼ一致
 
 ```{r eval=TRUE}
 shinki_sa <- shinki_all %>% dplyr::select(X__1, 大阪=`27大阪`,徳島=`36徳島`) %>% mutate(year = year(X__1), 差 = 徳島 - 大阪) %>% dplyr::select(year, 差)%>% group_by(year) %>%　summarise(差 = mean(差)) %>% 
