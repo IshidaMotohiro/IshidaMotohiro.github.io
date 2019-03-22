@@ -430,7 +430,16 @@ osaka_q  %>%
 #    theme(axis.text = element_text(angle = 30))# + theme_gray(base_family = "HiraKakuPro-W3") 
 ```
 
-## 徳島と大阪の求人倍率差{#tokushima_osaka}
+
+## 徳島と大阪の求人倍率差{#tokushima_osaka0}
+
+```{r eval=TRUE}
+shinki_all %>% dplyr::select(X__1, 大阪=`27大阪`,徳島=`36徳島`)  %>% mutate(year = year(X__1), 差 = 徳島 - 大阪)　%>% group_by(year) %>% summarise(徳島= mean(徳島), 大阪 = mean(大阪), 倍率差 = mean(差))  %>% mutate_at(c("徳島","大阪","倍率差"), round,3) %>% slice(42:46)%>% knitr::kable()#slice(50:55) %>% knitr::kable()
+```
+
+## 徳島と大阪の求人倍率差{#tokushima_osaka1}
+
+負の値になると転出増加
 
 ```{r eval=TRUE}
 shinki_sa <- shinki_all %>% dplyr::select(X__1, 大阪=`27大阪`,徳島=`36徳島`) %>% mutate(year = year(X__1), 差 = 徳島 - 大阪) %>% dplyr::select(year, 差)%>% group_by(year) %>%　summarise(差 = mean(差)) %>% 
@@ -550,6 +559,8 @@ predict(model_vars_tr, n.ahead = 5)[[1]]$転出 %>% broom::tidy() %>%
 
 
 ## ローカルトレンドモデル{#localtrend1}
+
+カルマンフィルタと最尤法で推定
 
 ![](images/localtrend.png)
 
