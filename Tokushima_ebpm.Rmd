@@ -38,10 +38,13 @@ load("20190323.Rdata")
 
 ## 人口移動{#population}
 
-1. 課題
-2. 転出超過
-3. データ
-4. e-STat 公開データ
+課題
+
+1. 転出超過
+
+データ
+
+2. e-STat 公開データ
 
 
 ## 徳島からの転出超過{#out1}
@@ -447,7 +450,7 @@ shinki_all %>% dplyr::select(X__1, 大阪=`27大阪`,徳島=`36徳島`)  %>% mut
 
 ## 徳島と大阪の求人倍率差{#tokushima_osaka1}
 
-負の値と転出超過数の動向がほぼ一致
+差と転出超過数の動向がほぼ一致
 
 ```{r eval=TRUE}
 shinki_sa <- shinki_all %>% dplyr::select(X__1, 大阪=`27大阪`,徳島=`36徳島`) %>% mutate(year = year(X__1), 差 = 徳島 - 大阪) %>% dplyr::select(year, 差)%>% group_by(year) %>%　summarise(差 = mean(差)) %>% 
@@ -480,9 +483,24 @@ sa %>%
 移動超過数 〜有効求人倍率の差
 
 
+## 時系列のチェック{#ts1}
+
+
+```{r eval=TRUE}
+library(forecast)
+ggtsdisplay(sa$転出超過)
+```
+
+
+## 時系列のチェック{#ts1}
+
+```{r eval=TRUE}
+ggtsdisplay(sa$差)
+```
+
 ## 統計モデル{#modeling}
 
-転出超過を新規有効求人倍率の差で説明
+
 
 1. 原系列は定常(KPSS検定)
 2. 二変量時系列解析（VARモデル）
@@ -578,14 +596,13 @@ predict(model_vars_tr, n.ahead = 5)[[1]]$転出 %>% broom::tidy() %>%
 
 
 
-## 課題
+## モデルの改善{#betterModel}
 
 10月に消費税増税
 
 
-1. 増税などのイベントの取り込み
-2. 共変量の追加
-3. 状態空間モデルでの推定
+1. 増税やリーマンショックなどのイベントの取り込み
+3. 状態空間モデルでの推定（状態と観測の分離）
 
 
 
@@ -747,6 +764,6 @@ ggplot(data = df_filter, aes(x = time, y = y)) +
 
 | 増税|       fit|       lwr|       upr|
 |--:| ---------:|---------:|---------:|
-| あり|-2254.708| -3305.244| -1204.173|
+|<font color="#ff0000">あり</font>|<font color="#ff0000">-2254.708</font>| -3305.244| -1204.173|
 |なし| -2192.707| -3206.204| -1179.211|
 
