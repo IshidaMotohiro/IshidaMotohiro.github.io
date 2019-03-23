@@ -36,6 +36,14 @@ load("20190323.Rdata")
 ```
 
 
+## 人口移動{#population}
+
+1. 課題
+2. 転出超過
+3. データ
+4. e-STat 公開データ
+
+
 ## 徳島からの転出超過{#out1}
 
 
@@ -336,7 +344,7 @@ tokuA  %>% filter(YEAR %within% interval(ymd("1975-01-01"), ymd ("2018-01-01")) 
   dplyr::select(転出超過 =value, YEAR) %>% 
                       ggplot(aes(x = YEAR, y = 転出超過)) + geom_line() +
                       scale_x_date(labels = date_format("%Y"),date_breaks = "5 year") + 
-  theme(axis.text.x = element_text(angle = 80)) +
+  theme(axis.text.x = element_text(angle = 30)) +
   ggtitle("1975年から2017年までの転出超過（全年齢）")
 ```
 
@@ -584,11 +592,11 @@ predict(model_vars_tr, n.ahead = 5)[[1]]$転出 %>% broom::tidy() %>%
 
 |year       |       fit|        lwr|        upr| 
 |:----------|----------:|----------:|----------:|
-|2014-01-01 |    -1495.0029| -1596.9629| -1493.0430|
-|2015-01-01 |    -2233.9963| -2335.9562| -2232.0363| 
-|2016-01-01 |    -1748.0015| -1849.9615| -1746.0416| 
-|2017-01-01 |    -1971.0000| -2072.9600| -1969.0401| 
-|2018-01-01 |    -2192.707| -3206.204| -1179.211| 
+|2014 |    -1495.0029| -1596.9629| -1493.0430|
+|2015 |    -2233.9963| -2335.9562| -2232.0363| 
+|2016 |    -1748.0015| -1849.9615| -1746.0416| 
+|2017 |    -1971.0000| -2072.9600| -1969.0401| 
+|2018 |    -2192.707| -3206.204| -1179.211| 
 
 2018年の日本人転出超過数は-2290
 
@@ -605,9 +613,10 @@ flag <- sa$year %in% c(ymd("1975-01-01"), ymd("1985-01-01"), ymd("1990-01-01"),y
 # build_trend_reg
 # # 
 build_local_reg2 <- SSModel(
-#    H = NA,
+    H = NA,
    sa$転出超過 ~ SSMtrend(degree = 1, Q = NA) + 
-   SSMregression(~ sa$差) +flag
+   SSMregression(~ sa$差) +flag,
+   distribution = "gaussian"
 )
 build_local_reg2     
 # )
@@ -620,28 +629,30 @@ result_local_reg2 <- KFS(
   filtering = c("state","mean"),
   smoothing = c("state", "mean")
 )
+result_local_reg2$model$H
+result_local_reg2$model$Q
 
 interval_local_coef <- predict(fit_local_reg2$model, states = "regression",
                          interval = "confidence", level = 0.95)
 
 coef_data <- cbind(data.frame(year = 1975:2017),
                    as.data.frame(interval_local_coef))
-
-coef_data
+# coef_data
 
 # forecast_trend_reg2 <- predict(fit_trend_reg2$model, interval = "confidence", level = 0.95)
+forecast_local_reg2 <- predict(fit_local_reg2$model, interval = "prediction", level = 0.95)
 forecast_local_reg2 <- predict(fit_local_reg2$model, interval = "confidence", level = 0.95)
 forecast_local_reg2
 # estimate <- cbind(sa, data.frame(YEAR = 1975:2017),
 #                    as.data.frame(forecast_trend_reg2))
 estimate <- sa %>% bind_cols(as.data.frame(forecast_local_reg2))
-estimate <- estimate %>% mutate(lwr = lwr - 100, upr + 100)
+# estimate <- estimate %>% mutate(lwr = lwr - 100, upr + 100)
 # estimate %>% tail
-estimate %>% ggplot(aes(x = year, y = 転出超過)) + geom_point() + geom_line(aes(y = fit),alpha = .3) +
-  geom_ribbon(aes(ymin= lwr, ymax = upr), alpha = .8)
-library(ggfortify)
-p_data <- autoplot(result_local_reg2$model$y, main ="転出数")
-p_trend <- autoplot(result_local_reg2$alphahat[, "level"], main = "トレンド" )
+estimate %>% ggplot(aes(x = year, y = 転出超過)) + geom_point() + geom_line(aes(y = fit),alpha = .9, col = "red") +  geom_ribbon(aes(ymin= lwr, ymax = upr), alpha = .3)
+# 
+# library(ggfortify)
+# p_data <- autoplot(result_local_reg2$model$y, main ="転出数")
+# p_local <- autoplot(result_local_reg2$alphahat[, "level"], main = "ローカルレベル" )
 
 # gridExtra::grid.arrange(p_data, p_trend)
 # 
@@ -649,23 +660,26 @@ p_trend <- autoplot(result_local_reg2$alphahat[, "level"], main = "トレンド"
 # p_slope <- autoplot(result_trend_reg$alphahat[, "slope"], main = "係数")
 # 
 # gridExtra::grid.arrange(p_data, p_trend, p_shinki, p_slope )
+
+# new_d <- rep(-0.562, 3)
+# sa_new <- data.frame(year = c(ymd("2018-01-01"), ymd("2019-01-01"), ymd("2020-01-01")),
+#                     転出超過 = rep(NA, 3), 差 = rep(-0.562, 3))
+# 
+# new_d <- SSModel(formula = 
+#   転出超過 ~ SSMtrend(degree = 2) + 
+#     SSMregression(~ 差) + flag1,
+#   data = sa_new)
+# attr(fit_trend_reg$model, "k")
+# attr(new_d, "k")
+
 flag1 <- rep(FALSE, 3) ; flag2 <- c(TRUE, FALSE, FALSE)
-new_d <- rep(-0.562, 3)
 
-sa_new <- data.frame(year = c(ymd("2018-01-01"), ymd("2019-01-01"), ymd("2020-01-01")),
-                    転出超過 = rep(NA, 3), 差 = rep(-0.562, 3))
-
-new_d <- SSModel(formula = 
-  転出超過 ~ SSMtrend(degree = 2) + 
-    SSMregression(~ 差) + flag1,
-  data = sa_new)
-
-new_d2 <- SSModel(formula = 
+new_d1 <- SSModel(formula = 
   転出超過 ~ SSMtrend(degree = 1) + 
     SSMregression(~ 差) + flag1,
   data = sa_new)
 
-new_d3 <- SSModel(formula = 
+new_d2 <- SSModel(formula = 
   転出超過 ~ SSMtrend(degree = 1) + 
     SSMregression(~ 差) + flag2,
   data = sa_new)
@@ -677,7 +691,7 @@ new_d3 <- SSModel(formula =
 
 pred_d1 <- KFAS:::predict.SSModel(
   object = fit_trend_reg2$model,
-  newdata = new_d2,
+  newdata = new_d1,
   interval = "prediction", 
   level=0.9)
 pred_d1
@@ -685,14 +699,39 @@ pred_d1
 
 pred_d2 <- KFAS:::predict.SSModel(
   object = fit_trend_reg2$model,
-  newdata = new_d3,
+  newdata = new_d2,
   interval = "prediction", 
   level=0.9)
 pred_d2
 rm(pred_d)
 
-attr(fit_trend_reg$model, "k")
-attr(new_d, "k")
+```
+
+```{r}
+
+## https://shumagit.github.io/myblog/2018/09/04/kfas-locallevel-with-expl/
+mu <-  result_local_reg2$alphahat[, "level"]
+mu.se <-  result_local_reg2$V[3,3,]
+
+# フィルタ化推定量
+mu_filter_kfas <- result_local_reg2$a["level"]
+# 平滑化推状態
+mu_smooth_kfas <- result_local_reg2$alphahat
+
+
+df_filter <- data.frame(
+  y         = sa$ 転出超過, 
+  time      = 1975:2017,
+  mu_filter = fitted(result_local_reg2)
+)
+
+
+ggplot(data = df_filter, aes(x = time, y = y)) + 
+  labs(title="フィルタ化推定量") +
+  geom_point(alpha = 0.6) +
+  geom_line(aes(y = mu_filter), size = 1.2)
+
+
 ```
 
 ## ローカルモデル予測{#localpredict1}
