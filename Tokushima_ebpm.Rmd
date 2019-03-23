@@ -32,7 +32,7 @@ setwd("~/Dropbox/R/Lectures/2019")
 #load("ddf.Rdata")
 #load("all_values2.Rdata")
 # save.image("20190321.Rdata")
-load("20190321.Rdata")
+load("20190323.Rdata")
 ```
 
 
@@ -467,6 +467,10 @@ sa %>%
 
 ```
 
+## 倍率の差を説明{#explain}
+
+移動超過数 〜有効求人倍率の差
+
 
 ## 統計モデル{#modeling}
 
@@ -475,6 +479,7 @@ sa %>%
 1. 原系列は定常(KPSS検定)
 2. 二変量時系列解析（VARモデル）
 3. VARモデルによる予測
+4. Granger因果性検定
 
 ```{r}
 # 2. 共和分はない(Phillips-Ouliaris検定)
@@ -513,6 +518,17 @@ model_vars_sa <- VAR(y = sa_t, type = "const", p = jigen_sa$selection[1])
 2018年を取り除いての分析
 
 2018年以降を予測
+
+```{r}
+fitted2017 <- fitted(model_vars_sa)
+pred2018 <- predict(model_vars_sa, n.ahead = 1)[[1]]$転出超過 %>% broom::tidy() %>% 
+  add_column(年 = c("2018"), .before = "fcst")
+
+# > fitted(model_vars_sa) %>% NROW() 
+# [1] 39
+# > sa_t %>% NROW()
+# [1] 43 つまりp=4 次
+```
 
 ```{r eval=TRUE}
 predict(model_vars_sa, n.ahead = 5)[[1]]$転出超過 %>% broom::tidy() %>% 
@@ -558,59 +574,133 @@ predict(model_vars_tr, n.ahead = 5)[[1]]$転出 %>% broom::tidy() %>%
 
 
 
-## ローカルトレンドモデル{#localtrend1}
+## 状態空間モデル{#localmodel1}
 
 カルマンフィルタと最尤法で推定
 
-![](images/localtrend.png)
+![](images/kfas1.png)
+
+## 状態空間モデル{#localmodel2}
+
+|year       |       fit|        lwr|        upr| 
+|:----------|----------:|----------:|----------:|
+|2014-01-01 |    -1495.0029| -1596.9629| -1493.0430|
+|2015-01-01 |    -2233.9963| -2335.9562| -2232.0363| 
+|2016-01-01 |    -1748.0015| -1849.9615| -1746.0416| 
+|2017-01-01 |    -1971.0000| -2072.9600| -1969.0401| 
+|2018-01-01 |    -2192.707| -3206.204| -1179.211| 
+
+2018年の日本人転出超過数は-2290
 
 ```{r}
-
+library(KFAS)
 flag <- sa$year %in% c(ymd("1975-01-01"), ymd("1985-01-01"), ymd("1990-01-01"),ymd("1995-01-01"),ymd("2008-01-01"),ymd("2014-01-01"))
-
-build_trend_reg <- SSModel(
-  H = NA,
-  sa$転出超過 ~ SSMtrend(degree = 2, Q = c(list(NA), list(NA))) + 
-  SSMregression(~ sa$差, Q = NA) +flag
-    
+# 
+# build_trend_reg <- SSModel(
+#   H = NA,
+#   sa$転出超過 ~ SSMtrend(degree = 2, Q = c(list(NA), list(NA))) + 
+#   SSMregression(~ sa$差, Q = NA) +flag
+#     
+# )
+# build_trend_reg
+# # 
+build_local_reg2 <- SSModel(
+#    H = NA,
+   sa$転出超過 ~ SSMtrend(degree = 1, Q = NA) + 
+   SSMregression(~ sa$差) +flag
 )
+build_local_reg2     
+# )
 
-fit_trend_reg <- fitSSM(build_trend_reg, inits = c(1,1,1,1))
+# fit_trend_reg <- fitSSM(build_trend_reg, inits = c(1,1,1,1))
+fit_local_reg2 <- fitSSM(build_local_reg2, inits = c(1,1,1))
 
-result_trend_reg <- KFS(
-  fit_trend_reg$model,
+result_local_reg2 <- KFS(
+  fit_local_reg2$model,
   filtering = c("state","mean"),
   smoothing = c("state", "mean")
 )
 
-interval_coef <- predict(fit_trend_reg$model, states = "regression",
+interval_local_coef <- predict(fit_local_reg2$model, states = "regression",
                          interval = "confidence", level = 0.95)
 
 coef_data <- cbind(data.frame(year = 1975:2017),
-                   as.data.frame(interval_coef))
+                   as.data.frame(interval_local_coef))
 
+coef_data
 
-forecast_trend_reg <- predict(fit_trend_reg$model, interval = "confidence", level = 0.95)
+# forecast_trend_reg2 <- predict(fit_trend_reg2$model, interval = "confidence", level = 0.95)
+forecast_local_reg2 <- predict(fit_local_reg2$model, interval = "confidence", level = 0.95)
+forecast_local_reg2
+# estimate <- cbind(sa, data.frame(YEAR = 1975:2017),
+#                    as.data.frame(forecast_trend_reg2))
+estimate <- sa %>% bind_cols(as.data.frame(forecast_local_reg2))
+estimate <- estimate %>% mutate(lwr = lwr - 100, upr + 100)
+# estimate %>% tail
+estimate %>% ggplot(aes(x = year, y = 転出超過)) + geom_point() + geom_line(aes(y = fit),alpha = .3) +
+  geom_ribbon(aes(ymin= lwr, ymax = upr), alpha = .8)
+library(ggfortify)
+p_data <- autoplot(result_local_reg2$model$y, main ="転出数")
+p_trend <- autoplot(result_local_reg2$alphahat[, "level"], main = "トレンド" )
 
-estimate <- cbind(data.frame(year = 1975:2017),
-                   as.data.frame(forecast_trend_reg))
-
-estimate %>% ggplot(aes(x = year, y = sa$転出超過)) + geom_point() + geom_line(aes(y = fit),alpha = .3) +
-  geom_ribbon(aes(ymin= lwr, ymax = upr), alpha = .3)
-
-p_data <- autoplot(result_trend_reg$model$y, main ="転出数")
-p_trend <- autoplot(result_trend_reg$alphahat[, "level"], main = "トレンド" )
-
-gridExtra::grid.arrange(p_data, p_trend)
+# gridExtra::grid.arrange(p_data, p_trend)
 # 
 # p_shinki <- autoplot(result_trend_reg$alphahat[, "sa"], main = "求人倍率")
 # p_slope <- autoplot(result_trend_reg$alphahat[, "slope"], main = "係数")
 # 
 # gridExtra::grid.arrange(p_data, p_trend, p_shinki, p_slope )
+flag1 <- rep(FALSE, 3) ; flag2 <- c(TRUE, FALSE, FALSE)
+new_d <- rep(-0.562, 3)
+
+sa_new <- data.frame(year = c(ymd("2018-01-01"), ymd("2019-01-01"), ymd("2020-01-01")),
+                    転出超過 = rep(NA, 3), 差 = rep(-0.562, 3))
+
+new_d <- SSModel(formula = 
+  転出超過 ~ SSMtrend(degree = 2) + 
+    SSMregression(~ 差) + flag1,
+  data = sa_new)
+
+new_d2 <- SSModel(formula = 
+  転出超過 ~ SSMtrend(degree = 1) + 
+    SSMregression(~ 差) + flag1,
+  data = sa_new)
+
+new_d3 <- SSModel(formula = 
+  転出超過 ~ SSMtrend(degree = 1) + 
+    SSMregression(~ 差) + flag2,
+  data = sa_new)
+
+
+#new_d <- SSModel(formula = 
+#   rep(NA, 3) ~ SSMtrend(degree = 2) + SSMregression(~ rep(NA,3)) + flag1)
+# + SSMcustom(k = fit_trend_reg$model$k, m = fit_trend_reg$model$m)
+
+pred_d1 <- KFAS:::predict.SSModel(
+  object = fit_trend_reg2$model,
+  newdata = new_d2,
+  interval = "prediction", 
+  level=0.9)
+pred_d1
+
+
+pred_d2 <- KFAS:::predict.SSModel(
+  object = fit_trend_reg2$model,
+  newdata = new_d3,
+  interval = "prediction", 
+  level=0.9)
+pred_d2
+rm(pred_d)
+
+attr(fit_trend_reg$model, "k")
+attr(new_d, "k")
 ```
 
+## ローカルモデル予測{#localpredict1}
 
+消費税増税による2019年の転出超過数
 
-## ローカルトレンドモデル{#localtrend2}
+| 増税|       fit|       lwr|       upr|
+|--:| ---------:|---------:|---------:|
+| あり|-2254.708| -3305.244| -1204.173|
+|なし| -2192.707| -3206.204| -1179.211|
 
-![](images/localtrend2.png)
