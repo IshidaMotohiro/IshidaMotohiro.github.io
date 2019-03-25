@@ -608,7 +608,7 @@ predict(model_vars_tr, n.ahead = 5)[[1]]$転出 %>% broom::tidy() %>%
 
 ## 状態空間モデル{#localmodel1}
 
-カルマンフィルタと最尤法で推定
+カルマンフィルタと平滑化
 
 ![](images/kfas1.png)
 
